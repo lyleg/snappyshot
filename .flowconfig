@@ -1,0 +1,9 @@
+[ignore]
+
+[include]
+
+[libs]
+interfaces
+node_modules/react-docgen/flow-typed
+
+[options]
