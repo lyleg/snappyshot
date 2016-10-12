@@ -1,11 +1,11 @@
 {
   "name": "snappyshot",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
     "dev": "rimraf dist/ && babel --watch src/ --out-dir dist/ --ignore __tests__,__mocks__",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "babel-node"
   },
   "bin": {
@@ -24,6 +24,7 @@
   "dependencies": {
     "babylon": "^6.11.4",
     "denodeify": "^1.2.1",
+    "jest": "^16.0.1",
     "node-dir": "^0.1.16",
     "nomnom": "^1.8.1",
     "prettyjson": "^1.1.3",
