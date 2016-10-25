@@ -1,4 +1,22 @@
 //check for defaultValues,  flow, then proptypes
+let flowTypeMap = {//move defaults to snappyshot.config.js
+  'number': 2000,
+  'string': 'abcdefghijklmnopqrstuvwxyz',
+  'boolean': true,
+  'null': null,
+  'void': undefined,
+  'any': 1,
+  'mixed':{},
+}
+
+
+function keyValueToString(typeName, propName, propValue){
+  if(typeName === 'string'){
+    propValue = '"' + propValue + '"'
+  }
+  return ' ' + propName + ' = ' + propValue
+}
+
 export function mockPropString(parsedResponse:ParsedResponse){
   if(parsedResponse.props){
     return Object.keys(parsedResponse.props)
@@ -7,10 +25,8 @@ export function mockPropString(parsedResponse:ParsedResponse){
         let propDescriptor = parsedResponse.props[propName]
         let typeName = getTypeName(propDescriptor)
         let propValue = generateMockValue(propName, propDescriptor)
-        if(typeName === 'string'){
-          propValue = '"' + propValue + '"'
-        }
-        return propsString += ' ' + propName + ' = ' + propValue
+        let keyValueString = keyValueString(typeName,propName,propValue)
+        return propsString += keyValueString
     },'')
   }else{
     return null
@@ -25,19 +41,23 @@ export function getTypeName(propDescriptor:PropDescriptor){
   }
 }
 
-export function generateMockValueFromFlowType(propName:string, propDescriptor:PropDescriptor):string{
-  let flowTypeMap = {//move defaults to snappyshot.config.js
-    'number': 2000,
-    'string': 'abcdefghijklmnopqrstuvwxyz',
-    'boolean': true,
-    'null': null,
-    'void': undefined,
-    'any': 1,
-    'mixed':{},
-  }
 
-  if(propDescriptor.flowType && flowTypeMap[propDescriptor.flowType.name]){
-    return flowTypeMap[propDescriptor.flowType.name]
+export function parseFlowTypeObject(flowTypeObject:Object){
+  return Object.keys(flowTypeObject).reduce((str,key)=>{
+    if(typeof flowTypeObject[key] === 'object'){
+      return str + ' ' + key + ' = ' + parseFlowTypeObject(flowTypeObject[key])
+    }else{
+      let propName = key
+      let typeName = flowTypeObject[key]//know it is flow, can just reference typename
+      let propValue = generateMockValueFromFlowType(typeName)
+      return str + keyValueToString(typeName, propName, propValue)
+    }
+  },'{') + '}'
+}
+
+export function generateMockValueFromFlowType(typeName:string):string{
+  if(flowTypeMap[typeName]){
+    return flowTypeMap[typeName]
   }else{
     //console.log(JSON.stringify(propDescriptor.flowType.elements))
     console.warn('unable to determine flowtype for ' + propName)
@@ -49,7 +69,8 @@ export function generateMockValue(propName:string, propDescriptor:PropDescriptor
   if(propDescriptor.defaultValue){
     return propDescriptor.defaultValue.value
   }else if(propDescriptor.flowType){
-    return generateMockValueFromFlowType(propName, propDescriptor)
+    let typeName = getTypeName(propDescriptor)
+    return generateMockValueFromFlowType(propName, typeName)
   }else{//todo, add check for propType
     console.warn('not able to generate a value for ')
     return ''
