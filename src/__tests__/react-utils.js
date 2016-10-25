@@ -7,7 +7,7 @@ test('computes simple object', ()=>{
     foo:'string',
     bar: 'number'
   }
-  //expect(parseFlowTypeObject(simpleObj)).toBe(0)
+  expect(parseFlowTypeObject(simpleObj)).toMatchSnapshot()
   let twoLevelObj = {
     foo:'string',
     bar: 'number',
@@ -16,5 +16,5 @@ test('computes simple object', ()=>{
       beep:'number'
     }
   }
-  expect(parseFlowTypeObject(twoLevelObj)).toBe(0)
+  expect(parseFlowTypeObject(twoLevelObj)).toMatchSnapshot()
 })

@@ -1,0 +1,3 @@
+exports[`test computes simple object 1`] = `"{ foo = \"abcdefghijklmnopqrstuvwxyz\" bar = 2000}"`;
+
+exports[`test computes simple object 2`] = `"{ foo = \"abcdefghijklmnopqrstuvwxyz\" bar = 2000 baz = { boop = \"abcdefghijklmnopqrstuvwxyz\" beep = 2000}}"`;
