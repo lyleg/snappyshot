@@ -2,7 +2,7 @@
 import reactComponentSnapshotTemplate from './reactComponentSnapshotTemplate'
 import {parse as docGenParse} from 'react-docgen'
 import {parse as babyParse} from 'babylon'
-import {getExportNameType} from './babylon-utils'
+import {getExportNameTypeAll} from './babylon-utils'
 import {generateFilePathTraversal} from './utils'
 import {mockPropString, getTypeName, generateMockValueFromFlowType, generateMockValue} from './react-utils'
 
@@ -20,9 +20,17 @@ let babyOptions =  {
   ]
 }
 
+function generateFunctionalSnapshots(componentSrc:string, filePath:string){
+  let babyParsed = babyParse(componentSrc, babyOptions)
+  let exportNameTypes = getExportNameTypeAll(babyParsed)
+  return exportNameTypes.map(exportNameType => {
+    //do similar action for functions
+  })
+}
 
 export function generateSnapshot(src:string, filePath:string){
   return generateReactComponentSnapshot(src, filePath)//if component
+  //return generateFunctionalSnapshots
 }
 
  function generateReactComponentSnapshot(componentSrc:string, filePath:string){
@@ -33,7 +41,7 @@ export function generateSnapshot(src:string, filePath:string){
     let mockedChildrenProp = (docGenParsed.props.children)
       ? generateMockValue('children',docGenParsed.props.children)
       : ''
-    let exportNameType = getExportNameType(babyParsed)
+    let exportNameType = getExportNameTypeAll(babyParsed)[0]
     filePath = generateFilePathTraversal(filePath) + filePath
     let snapshotString = reactComponentSnapshotTemplate({
       component: exportNameType.name,
