@@ -3,5 +3,6 @@ declare type ParsedResponse = {
 }
 declare type ExportNameType = {
   type: ?string,
-  name: string
+  name: string,
+  declaration: Object
 }
