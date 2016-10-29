@@ -4,6 +4,7 @@ import functionalSnapshotTemplate from './snapshot-templates/functional-snapshot
 import {parse as docGenParse} from 'react-docgen'
 import {parse as babyParse} from 'babylon'
 import {getExports} from './babylon-utils'
+import {generateSignaturesFromFlowType} from './data-utils'
 import {generateFilePathTraversal} from './utils'
 import {mockPropString, getTypeName, generateMockValueFromFlowType, generateMockValue} from './react-utils'
 
@@ -22,15 +23,16 @@ let babyOptions =  {
 }
 
 function generateFunctionalSnapshots(componentSrc:string, filePath:string){
-  console.log(componentSrc)
   let babyParsed = babyParse(componentSrc, babyOptions)
   let exportsFromTarget = getExports(babyParsed)
 
-  return exportsFromTarget.map(exportNameType => {
-    if (exportNameType.declaration.type === 'FunctionDeclaration'){
+  return exportsFromTarget.map(exportFromTarget => {
+    if (exportFromTarget.declaration.type === 'FunctionDeclaration'){
       return functionalSnapshotTemplate({
-        name: exportNameType.declaration.id.name,
-        filePath: generateFilePathTraversal(filePath) + filePath
+        type: exportFromTarget.type,
+        name: exportFromTarget.declaration.id.name,
+        filePath: generateFilePathTraversal(filePath) + filePath,
+        signatures: generateSignaturesFromFlowType(exportFromTarget)
       })
     }
     //if class

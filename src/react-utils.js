@@ -1,14 +1,5 @@
 //check for defaultValues,  flow, then proptypes
-let flowTypeMap = {//move defaults to snappyshot.config.js
-  'number': 2000,
-  'string': 'abcdefghijklmnopqrstuvwxyz',
-  'boolean': true,
-  'null': null,
-  'void': undefined,
-  'any': 1,
-  'mixed':{},
-}
-
+import {dataTypeMap} from './data-utils'
 
 function keyValueToString(typeName, propName, propValue){
   if(typeName === 'string'){
@@ -56,8 +47,8 @@ export function parseFlowTypeObject(flowTypeObject:Object){
 }
 
 export function generateMockValueFromFlowType(typeName:string):string{
-  if(flowTypeMap[typeName]){
-    return flowTypeMap[typeName]
+  if(dataTypeMap[typeName]){
+    return dataTypeMap[typeName]
   }else{
     //console.log(JSON.stringify(propDescriptor.flowType.elements))
     console.warn('unable to determine flowtype for ' + propName)

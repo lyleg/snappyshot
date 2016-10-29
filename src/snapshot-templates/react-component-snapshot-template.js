@@ -1,7 +1,7 @@
 export default function reactComponentSnapshotTemplate(options){
   let {component, componentPath, componentProps, componentChildren, type} = options
   let componentImportString = `${component}`
-  if(type === 'named'){
+  if(type === 'ExportNamedDeclaration'){
     componentImportString = '{' + componentImportString + '}'
   }
   let template =
