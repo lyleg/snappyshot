@@ -11,7 +11,7 @@ import {mockPropString, getTypeName, generateMockValueFromFlowType, generateMock
 /* potential ideas
 generate multiple snapshots with optional permutations for non required and things like boolean
 atom plugin
-snapshot non react components, babylon parser or recast?
+https://github.com/babel/babel/tree/master/packages/babel-template replace our templates?
 */
 
 let babyOptions =  {
@@ -22,8 +22,16 @@ let babyOptions =  {
   ]
 }
 
-function generateFunctionalSnapshots(componentSrc:string, filePath:string){
-  let babyParsed = babyParse(componentSrc, babyOptions)
+function isReact(path) {//simple react check, only valid for components that directly extend React.component
+  if(path && path.declaration && path.declaration.superClass
+    && path.declaration.superClass.object
+    && path.declaration.superClass.object.name === 'React'){
+    return true
+  }//react native name?
+  return false
+}
+
+function generateFunctionalSnapshots(componentSrc:string, babyParsed:Object, filePath:string){
   let exportsFromTarget = getExports(babyParsed)
 
   return exportsFromTarget.map(exportFromTarget => {
@@ -41,14 +49,21 @@ function generateFunctionalSnapshots(componentSrc:string, filePath:string){
 }
 
 export function generateSnapshot(src:string, filePath:string){
-  //return generateReactComponentSnapshot(src, filePath)//if component
-  return generateFunctionalSnapshots(src, filePath)
+  let babyParsed = babyParse(src, babyOptions)
+  let isReactComponent = getExports(babyParsed).find((exportNode)=>{//loop through all exports, if one react exists push to react-docgen for now, else loop and mock for all
+    return isReact(exportNode)
+  })
+  if(isReactComponent){
+    return generateReactComponentSnapshot(src, babyParsed, filePath)
+  }else{
+    return generateFunctionalSnapshots(src, babyParsed, filePath)
+  }
+
 }
 
- function generateReactComponentSnapshot(componentSrc:string, filePath:string){
-    let babyParsed = babyParse(componentSrc, babyOptions)
+ function generateReactComponentSnapshot(componentSrc:string, babyParsed:Object, filePath:string){
     let docGenParsed = docGenParse(componentSrc)
-
+    //todo, handle when no props
     let mockedPropString = mockPropString(docGenParsed)
     let mockedChildrenProp = (docGenParsed.props.children)
       ? generateMockValue('children',docGenParsed.props.children)

@@ -20,11 +20,11 @@ var argv = require('nomnom')
   let generateSnapshot = require('../dist/index').generateSnapshot
 
 
-  function readFiles(filePath){
+  function readFiles(filePath){//convert to async / await and handle when file doesn't exit
    fs.readFile(filePath, { encoding: 'UTF-8' },(err, componentSrc)=>{
     let snapshot = generateSnapshot(componentSrc, filePath)
     let writePath = '__tests__/' +  filePath
-    fs.writeFile(writePath, snapshot, (err)=>{//check for dir
+    fs.writeFile(writePath, snapshot, (err)=>{//check for dir, mkdirp if doesn't exist
       if(err){
         console.warn(err)
       }
