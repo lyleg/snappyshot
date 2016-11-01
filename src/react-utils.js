@@ -25,7 +25,6 @@ export function mockPropString(parsedResponse:ParsedResponse){
 }
 
 export function getTypeName(propDescriptor:PropDescriptor){
-  console.log(propDescriptor)
   if(propDescriptor.flowType){
     return propDescriptor.flowType.name
   }else if(propDescriptor.type){
@@ -36,9 +35,6 @@ export function getTypeName(propDescriptor:PropDescriptor){
 
 export function parseFlowTypeObject(flowTypeObject:Object){
   return Object.keys(flowTypeObject).reduce((str,key)=>{
-    console.log(flowTypeObject[key])
-    console.log(flowTypeObject)
-    console.log(key)
     if(typeof flowTypeObject[key] === 'object'){
       return str + ' ' + key + ' = ' + parseFlowTypeObject(flowTypeObject[key])
     }else{
@@ -51,6 +47,7 @@ export function parseFlowTypeObject(flowTypeObject:Object){
 }
 
 export function generateMockValueFromFlowType(typeName:string, propName:string):string{//make function pure
+  console.log('type ' + typeName)
   if(dataTypeMap[typeName]){
     return dataTypeMap[typeName]
   }else{
@@ -66,7 +63,7 @@ export function generateMockValue(propName:string, propDescriptor:PropDescriptor
   }else if(propDescriptor.flowType){
     let typeName = getTypeName(propDescriptor)
     console.log(typeName)
-    return generateMockValueFromFlowType(propName, typeName)
+    return generateMockValueFromFlowType(typeName, propName)
   }else{//todo, add check for propType
     console.warn('not able to generate a value for ')
     return ''

@@ -6,11 +6,12 @@ const STATUS = {
   HOVERED: 'hovered',
 };
 
+type Props = {
+  page: string,
+  children: string
+}
 export class Link extends React.Component {
-  props:{
-    page: 'string',
-    children: 'string'
-  }
+  props:Props
   constructor() {
     super();
 
