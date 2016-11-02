@@ -18,17 +18,32 @@ var argv = require('nomnom')
   let path = require('path')
   let filePaths = argv.filePaths
   let generateSnapshot = require('../dist/index').generateSnapshot
+  let isDir = require('../dist/utils').isDir
+  let mkdirp = require('mkdirp')
 
 
   function readFiles(filePath){//convert to async / await and handle when file doesn't exit
-   fs.readFile(filePath, { encoding: 'UTF-8' },(err, componentSrc)=>{
+   fs.readFile(filePath, { encoding: 'UTF-8' },async (err, componentSrc)=>{
     let snapshot = generateSnapshot(componentSrc, filePath)
     let writePath = '__tests__/' +  filePath
-    fs.writeFile(writePath, snapshot, (err)=>{//check for dir, mkdirp if doesn't exist
-      if(err){
-        console.warn(err)
+    if(await isDir(writePath)){
+      fs.writeFile(writePath, snapshot, (err)=>{//check for dir, mkdirp if doesn't exist
+        if(err){
+          console.warn(err)
+        }
+      })
+    }else{
+      mkdirp(writePath, function (err) {
+        if (err) console.error(err)
+          else{
+            fs.writeFile(writePath, snapshot, (err)=>{//put in common
+              if(err){
+                console.warn(err)
+              }
+            })
+          }
+        });
       }
-    })
    })
  }
 
