@@ -9,7 +9,7 @@
     "build": "babel-node"
   },
   "bin": {
-    "snappyshot": "bin/snappyshot.js"
+    "snappyshot": "dist/snappyshot-cli.js"
   },
   "author": "Lyle Garza",
   "license": "ISC",
