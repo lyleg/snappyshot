@@ -34,18 +34,18 @@ function isReact(path:Object) {//simple react check, only valid for components t
 function generateFunctionalSnapshots(componentSrc:string, babyParsed:Object, filePath:string){
   let exportsFromTarget = getExports(babyParsed)
 
-  return exportsFromTarget.map(exportFromTarget => {
+  return exportsFromTarget.reduce((snapshotString,exportFromTarget) => {
     if (exportFromTarget.declaration.type === 'FunctionDeclaration'){
-      return functionalSnapshotTemplate({
+      return snapshotString + functionalSnapshotTemplate({
         type: exportFromTarget.type,
         name: exportFromTarget.declaration.id.name,
         filePath: generateFilePathTraversal(filePath) + filePath,
         signatures: generateSignaturesFromFlowType(exportFromTarget)
-      })
+      }) + '\n'
     }
     //if class
     //if ?
-  })
+  },'')
 }
 
 export function generateSnapshot(src:string, filePath:string){
