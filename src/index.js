@@ -22,7 +22,7 @@ let babyOptions =  {
   ]
 }
 
-function isReact(path) {//simple react check, only valid for components that directly extend React.component
+function isReact(path:Object) {//simple react check, only valid for components that directly extend React.component
   if(path && path.declaration && path.declaration.superClass
     && path.declaration.superClass.object
     && path.declaration.superClass.object.name === 'React'){

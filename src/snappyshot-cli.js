@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 /* @flow */
-
 var argv = require('nomnom')
   .script('snappyshot')
   .help('help content')
@@ -25,18 +24,17 @@ var argv = require('nomnom')
 
 
 
-  async function readFiles(filePath){//convert to async / await and handle when file doesn't exit
+  async function readFiles(filePath:string){//convert to async / await and handle when file doesn't exit
     try{
-
       let fileSrc = await toPromise(fs.readFile)(filePath, { encoding: 'UTF-8' })
       let snapshot = generateSnapshot(fileSrc, filePath)
       let writeFilePath = '__tests__/' +  filePath
       let writeFolderPath = computeFolderPath(writeFilePath)
-      console.log(writeFolderPath)
-      if(await !isDir(writeFolderPath)){
-        console.log('make')
-        await mkdirp(writeFolderPath)//toPromise this
+
+      if(!await isDir(writeFolderPath)){
+        await toPromise(mkdirp)(writeFolderPath)
       }
+      
       await toPromise(fs.writeFile)(writeFilePath, snapshot)
     }catch(e){
       console.log(e)
