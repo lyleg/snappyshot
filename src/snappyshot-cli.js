@@ -19,7 +19,7 @@ var argv = require('nomnom')
   let toPromise = require('denodeify')
   let filePaths = argv.filePaths
   let generateSnapshot = require('../dist/index').generateSnapshot
-  let {isDir} = require('../dist/utils').isDir
+  let {isDir, computeFolderPath} = require('../dist/utils')
   let mkdirp = require('mkdirp')
 
 
@@ -32,7 +32,7 @@ var argv = require('nomnom')
       let snapshot = generateSnapshot(fileSrc, filePath)
       let writeFilePath = '__tests__/' +  filePath
       let writeFolderPath = computeFolderPath(writeFilePath)
-      //let writeFolderPath = ''
+      console.log(writeFolderPath)
       if(await !isDir(writeFolderPath)){
         console.log('make')
         await mkdirp(writeFolderPath)//toPromise this
