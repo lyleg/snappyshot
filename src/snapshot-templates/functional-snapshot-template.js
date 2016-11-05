@@ -1,6 +1,12 @@
 export default function functionalSnapshotTemplate(options){
   let {name, filePath, signatures, type} = options
-  let signatureString = signatures.join(',')
+  let signatureString = signatures.map((signature)=>{
+    if(Array.isArray(signature)){
+      return JSON.stringify(signature)
+    }else{
+      return signature
+    }
+  }).join(',')
   let importString = name
   if(type === 'ExportNamedDeclaration'){
     importString = '{' + importString + '}'

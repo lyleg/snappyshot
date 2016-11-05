@@ -19,11 +19,11 @@ let typeAnnotationsMap = {//should I just ditch react doc gen and do everything 
   'MixedTypeAnnotation': 'mixed',
 }
 
-function getPlaceholderFromType(type){
-  if(type.type === 'GenericTypeAnnotation'){
-    return [getPlaceholderFromType(type.typeParameters.params[0])]
+export function getPlaceholderFromType(typeAnnotation){
+  if(typeAnnotation.type === 'GenericTypeAnnotation'){
+    return [getPlaceholderFromType(typeAnnotation.typeParameters.params[0])]
   }
-  let dataType = typeAnnotationsMap[type.type]
+  let dataType = typeAnnotationsMap[typeAnnotation.type]
   return dataTypeMap[dataType]
 }
 
