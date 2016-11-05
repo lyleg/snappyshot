@@ -19,13 +19,18 @@ let typeAnnotationsMap = {//should I just ditch react doc gen and do everything 
   'MixedTypeAnnotation': 'mixed',
 }
 
+function getPlaceholderFromType(type){
+  if(type.type === 'GenericTypeAnnotation'){
+    return [getPlaceholderFromType(type.typeParameters.params[0])]
+  }
+  let dataType = typeAnnotationsMap[type.type]
+  return dataTypeMap[dataType]
+}
 
-
-export function generateSignaturesFromFlowType(exportFromTarget){
+export function generateSignaturesFromFlowType(exportFromTarget:Object){
   return exportFromTarget.declaration.params
   .filter(param => param.typeAnnotation)
   .map((param)=>{
-    let type = typeAnnotationsMap[param.typeAnnotation.typeAnnotation.type]
-    return dataTypeMap[type]
+    return getPlaceholderFromType(param.typeAnnotation.typeAnnotation)
   })
 }
