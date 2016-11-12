@@ -1,7 +1,8 @@
 {
   "name": "snappyshot",
-  "version": "0.0.3",
-  "description": "",
+  "version": "0.0.4",
+  "description": "Automatically generate snapshot tests for React components and vanilla JavaScript",
+  "keywords":["snaphsot","unit tests","test generation"],
   "main": "dist/index.js",
   "scripts": {
     "dev": "rimraf dist/ && babel --watch src/ --out-dir dist/ --ignore __tests__,__mocks__",
@@ -11,8 +12,12 @@
   "bin": {
     "snappyshot": "dist/snappyshot-cli.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "github.com/lyleg/snappyshot"
+  },
   "author": "Lyle Garza",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "babel-cli": "^6.9.0",
     "babel-core": "^6.11.4",
