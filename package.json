@@ -2,7 +2,7 @@
   "name": "snappyshot",
   "version": "0.0.3",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
   "scripts": {
     "dev": "rimraf dist/ && babel --watch src/ --out-dir dist/ --ignore __tests__,__mocks__",
     "test": "jest",
