@@ -33,6 +33,7 @@ function isReact(path:Object) {//simple react check, only valid for components t
 
 
 function generateFunctionalSnapshot(exportFromTarget, filePath){
+  console.log(filePath)
   return functionalSnapshotTemplate({
     type: exportFromTarget.type,
     name: exportFromTarget.declaration.id.name,
@@ -42,9 +43,9 @@ function generateFunctionalSnapshot(exportFromTarget, filePath){
 }
 
 
-function generateVanillaSnapshot(exportFromTarget){
+function generateVanillaSnapshot(exportFromTarget, filePath){
   if (exportFromTarget.declaration.type === 'FunctionDeclaration'){
-    return generateFunctionalSnapshot(exportFromTarget)
+    return generateFunctionalSnapshot(exportFromTarget, filePath)
   }
   //if class
   //if ?
@@ -62,7 +63,7 @@ function generateSnapshotsFromExports(componentSrc:string, babyParsed:Object, fi
   return exportsFromTarget.reduce((snapshotString,exportFromTarget) => {
     if(exportFromTarget.declaration.type === 'ObjectExpression'){
       return exportFromTarget.declaration.properties.reduce((snapshotString, exportFromTargetOneLevel)=>{
-        return snapshotString + generateVanillaSnapshot(exportFromTargetOneLevel) + '\n'
+        return snapshotString + generateVanillaSnapshot(exportFromTargetOneLevel, filePath) + '\n'
       })
     }
     else{
@@ -76,10 +77,10 @@ export function generateSnapshot(src:string, filePath:string){
   let isReactComponent = getExports(babyParsed).find((exportNode)=>{//loop through all exports, if one react exists push to react-docgen for now, else loop and mock for all
     return isReact(exportNode)
   })
-  if(isReactComponent){
+  if(isReactComponent){//leveraging react-docgen for now, will eventually have everything go through generateSnapshotsFromExports
     return generateReactComponentSnapshot(src, babyParsed, filePath)
   }else{
-    return generateFunctionalSnapshots(src, babyParsed, filePath)
+    return generateSnapshotsFromExports(src, babyParsed, filePath)
   }
 
 }
