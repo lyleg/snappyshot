@@ -2,7 +2,11 @@
   "name": "snappyshot",
   "version": "0.0.4",
   "description": "Automatically generate snapshot tests for React components and vanilla JavaScript",
-  "keywords":["snaphsot","unit tests","test generation"],
+  "keywords": [
+    "snaphsot",
+    "unit tests",
+    "test generation"
+  ],
   "main": "dist/index.js",
   "scripts": {
     "dev": "rimraf dist/ && babel --watch src/ --out-dir dist/ --ignore __tests__,__mocks__",
@@ -21,10 +25,15 @@
   "devDependencies": {
     "babel-cli": "^6.9.0",
     "babel-core": "^6.11.4",
+    "babel-jest": "^17.0.0",
     "babel-loader": "^6.2.4",
     "babel-plugin-transform-async-to-generator": "^6.8.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.10.3",
-    "babel-plugin-transform-flow-strip-types": "^6.8.0"
+    "babel-plugin-transform-flow-strip-types": "^6.8.0",
+    "babel-polyfill": "^6.16.0",
+    "jest": "^16.0.2",
+    "react": "^15.3.2",
+    "react-test-renderer": "^15.3.2"
   },
   "dependencies": {
     "babylon": "^6.11.4",
