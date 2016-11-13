@@ -31,20 +31,43 @@ function isReact(path:Object) {//simple react check, only valid for components t
   return false
 }
 
-function generateFunctionalSnapshots(componentSrc:string, babyParsed:Object, filePath:string){
+
+function generateFunctionalSnapshot(exportFromTarget, filePath){
+  return functionalSnapshotTemplate({
+    type: exportFromTarget.type,
+    name: exportFromTarget.declaration.id.name,
+    filePath: generateFilePathTraversal(filePath) + filePath,
+    signatures: generateSignaturesFromFlowType(exportFromTarget)
+  })
+}
+
+
+function generateVanillaSnapshot(exportFromTarget){
+  if (exportFromTarget.declaration.type === 'FunctionDeclaration'){
+    return generateFunctionalSnapshot(exportFromTarget)
+  }
+  //if class
+  //if ?
+}
+/*
+For now support
+ - individually exported functions (default or no)
+ - one top level object's attributes either class or function
+ this is rather clunky, explore benefits / drawbacks of going recursive
+ */
+
+function generateSnapshotsFromExports(componentSrc:string, babyParsed:Object, filePath:string){
   let exportsFromTarget = getExports(babyParsed)
 
   return exportsFromTarget.reduce((snapshotString,exportFromTarget) => {
-    if (exportFromTarget.declaration.type === 'FunctionDeclaration'){
-      return snapshotString + functionalSnapshotTemplate({
-        type: exportFromTarget.type,
-        name: exportFromTarget.declaration.id.name,
-        filePath: generateFilePathTraversal(filePath) + filePath,
-        signatures: generateSignaturesFromFlowType(exportFromTarget)
-      }) + '\n'
+    if(exportFromTarget.declaration.type === 'ObjectExpression'){
+      return exportFromTarget.declaration.properties.reduce((snapshotString, exportFromTargetOneLevel)=>{
+        return snapshotString + generateVanillaSnapshot(exportFromTargetOneLevel) + '\n'
+      })
     }
-    //if class
-    //if ?
+    else{
+      return snapshotString + generateVanillaSnapshot(exportFromTarget, filePath) + '\n'
+    }
   },'')
 }
 
