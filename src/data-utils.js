@@ -27,8 +27,8 @@ export function getPlaceholderFromType(typeAnnotation){
   return dataTypeMap[dataType]
 }
 
-export function generateSignaturesFromFlowType(exportFromTarget:Object){
-  return exportFromTarget.declaration.params
+export function generateSignaturesFromFlowType(params:Array<Object>){
+  return params
   .filter(param => param.typeAnnotation)
   .map((param)=>{
     return getPlaceholderFromType(param.typeAnnotation.typeAnnotation)

@@ -1,6 +1,6 @@
-export default function functionalSnapshotTemplate(options){
-  let {name, filePath, signatures, exportType} = options
-  let signatureString = signatures.map((signature)=>{
+export default function classSnapshotTemplate(options){
+  let {name, filePath, constructorParams, exportType} = options
+  let constructorParamsString = constructorParams.map((signature)=>{
     if(Array.isArray(signature)){
       return JSON.stringify(signature)
     }else{
@@ -11,7 +11,7 @@ export default function functionalSnapshotTemplate(options){
   if(exportType === 'ExportNamedDeclaration'){
     importString = '{' + importString + '}'
   }
- let expectation = `expect(${name}(${signatureString})).toMatchSnapshot()`;
+ let expectation = `expect(${name}(${constructorParamsString})).toMatchSnapshot()`;
   let template =
 `import ${importString} from '${filePath}'
   it('default snapshot for ${name}', () => {

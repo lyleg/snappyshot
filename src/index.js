@@ -1,6 +1,7 @@
 /* @flow */
 import reactComponentSnapshotTemplate from './snapshot-templates/react-component-snapshot-template'
 import functionalSnapshotTemplate from './snapshot-templates/functional-snapshot-template'
+import classSnapshotTemplate from './snapshot-templates/class-snapshot-template'
 import {parse as docGenParse} from 'react-docgen'
 import {parse as babyParse} from 'babylon'
 import {getExports} from './babylon-utils'
@@ -33,16 +34,25 @@ function isReact(path:Object) {//simple react check, only valid for components t
 
 
 function generateFunctionalSnapshot(exportFromTarget, filePath){
-  console.log(filePath)
   return functionalSnapshotTemplate({
-    type: exportFromTarget.type,
+    exportType: exportFromTarget.type,
     name: exportFromTarget.declaration.id.name,
     filePath: generateFilePathTraversal(filePath) + filePath,
-    signatures: generateSignaturesFromFlowType(exportFromTarget)
+    signatures: generateSignaturesFromFlowType(exportFromTarget.declaration.params)
   })
 }
 
-
+function generateClassSnapshot(exportFromTarget, filePath){//poc for experimenting, not sure if a es6 class makes for great snapshots
+  let constructor = exportFromTarget.body.body.methodDefinition.find(methodDefinition => methodDefinition.kind === 'constructor')
+  if(constructor){
+    return classSnapShotTemplate({
+      exportType: exportFromTarget.type,
+      name: exportFromTarget.declaration.id.name,
+      filePath: generateFilePathTraversal(filePath) + filePath,
+      constructorParams:generateSignaturesFromFlowType(constructor.value.params.typeAnnotation)
+    })
+  }
+}
 function generateVanillaSnapshot(exportFromTarget, filePath){
   if (exportFromTarget.declaration.type === 'FunctionDeclaration'){
     return generateFunctionalSnapshot(exportFromTarget, filePath)
