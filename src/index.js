@@ -28,7 +28,7 @@ function isReact(path:Object) {//simple react check, only valid for components t
     && path.declaration.superClass.object
     && path.declaration.superClass.object.name === 'React'){
     return true
-  }//react native name?
+  }//react native, createClass name?
   return false
 }
 
@@ -45,7 +45,7 @@ function generateFunctionalSnapshot(exportFromTarget, filePath){
 function generateClassSnapshot(exportFromTarget, filePath){//poc for experimenting, not sure if a es6 class makes for great snapshots
   let constructor = exportFromTarget.body.body.methodDefinition.find(methodDefinition => methodDefinition.kind === 'constructor')
   if(constructor){
-    return classSnapShotTemplate({
+    return classSnapshotTemplate({
       exportType: exportFromTarget.type,
       name: exportFromTarget.declaration.id.name,
       filePath: generateFilePathTraversal(filePath) + filePath,
