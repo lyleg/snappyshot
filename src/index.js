@@ -33,12 +33,12 @@ function isReact(path:Object) {//simple react check, only valid for components t
 }
 
 
-function generateFunctionalSnapshot(exportFromTarget, filePath){
+function generateFunctionalSnapshot(exportFromTarget, filePath, typeAlias){
   return functionalSnapshotTemplate({
     exportType: exportFromTarget.type,
     name: exportFromTarget.declaration.id.name,
     filePath: generateFilePathTraversal(filePath) + filePath,
-    signatures: generateSignaturesFromFlowType(exportFromTarget.declaration.params)
+    signatures: generateSignaturesFromFlowType(exportFromTarget.declaration.params, typeAlias)
   })
 }
 
@@ -53,9 +53,9 @@ function generateClassSnapshot(exportFromTarget, filePath){//poc for experimenti
     })
   }
 }
-function generateVanillaSnapshot(exportFromTarget, filePath){
+function generateVanillaSnapshot(exportFromTarget, filePath, typeAlias){
   if (exportFromTarget.declaration.type === 'FunctionDeclaration'){
-    return generateFunctionalSnapshot(exportFromTarget, filePath)
+    return generateFunctionalSnapshot(exportFromTarget, filePath, typeAlias)
   }
   //if class
   //if ?
@@ -67,30 +67,32 @@ For now support
  this is rather clunky, explore benefits / drawbacks of going recursive
  */
 
-function generateSnapshotsFromExports(componentSrc:string, babyParsed:Object, filePath:string){
+function generateSnapshotsFromExports(babyParsed:Object, filePath:string, typeAlias:Array<Object>){
   let exportsFromTarget = getExports(babyParsed)
 
   return exportsFromTarget.reduce((snapshotString,exportFromTarget) => {
     if(exportFromTarget.declaration.type === 'ObjectExpression'){
       return exportFromTarget.declaration.properties.reduce((snapshotString, exportFromTargetOneLevel)=>{
-        return snapshotString + generateVanillaSnapshot(exportFromTargetOneLevel, filePath) + '\n'
+        return snapshotString + generateVanillaSnapshot(exportFromTargetOneLevel, filePath, typeAlias) + '\n'
       })
     }
     else{
-      return snapshotString + generateVanillaSnapshot(exportFromTarget, filePath) + '\n'
+      return snapshotString + generateVanillaSnapshot(exportFromTarget, filePath, typeAlias) + '\n'
     }
   },'')
 }
 
 export function generateSnapshot(src:string, filePath:string){
   let babyParsed = babyParse(src, babyOptions)
+  let typeAlias = babyParsed.program.body.filter((node) => node.type === 'TypeAlias')
+
   let isReactComponent = getExports(babyParsed).find((exportNode)=>{//loop through all exports, if one react exists push to react-docgen for now, else loop and mock for all
     return isReact(exportNode)
   })
   if(isReactComponent){//leveraging react-docgen for now, will eventually have everything go through generateSnapshotsFromExports
     return generateReactComponentSnapshot(src, babyParsed, filePath)
   }else{
-    return generateSnapshotsFromExports(src, babyParsed, filePath)
+    return generateSnapshotsFromExports(babyParsed, filePath, typeAlias)
   }
 
 }

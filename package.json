@@ -36,7 +36,7 @@
     "react-test-renderer": "^15.3.2"
   },
   "dependencies": {
-    "babylon": "^6.11.4",
+    "babylon": "^6.14.1",
     "denodeify": "^1.2.1",
     "jest": "^16.0.1",
     "mkdirp": "^0.5.1",
