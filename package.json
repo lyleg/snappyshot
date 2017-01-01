@@ -10,7 +10,7 @@
   "main": "dist/index.js",
   "scripts": {
     "copy": " cp -r dist/ /usr/local/lib/node_modules/snappyshot/dist",
-    "dev": "rimraf dist/ && babel --watch src/ --out-dir dist/ --ignore __tests__,__mocks__ && npm run copy",
+    "dev": "rimraf dist/ && babel --watch src/ --presets es2015 --out-dir dist/ --ignore __tests__,__mocks__ && npm run copy",
     "test": "jest",
     "build": "babel-node"
   },
@@ -32,6 +32,8 @@
     "babel-plugin-transform-es2015-modules-commonjs": "^6.10.3",
     "babel-plugin-transform-flow-strip-types": "^6.8.0",
     "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-stage-0": "^6.16.0",
     "jest": "^16.0.2",
     "react": "^15.3.2",
     "react-test-renderer": "^15.3.2"

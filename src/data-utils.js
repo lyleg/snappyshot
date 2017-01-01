@@ -34,10 +34,11 @@ export function getPlaceholderFromProperty(property, typeAliases){
   return dataTypeMap[dataType]
 }
 
-export function getGenericTypeObject(typeAlias, typeAliases){//how do I keep track of original keys
+export function getGenericTypeObject(typeAlias, typeAliases){
   return typeAlias.right.properties.reduce((customObject, property) => {
     if(property.value.type === 'GenericTypeAnnotation'){
-      return getPlaceholderFromType(property, typeAliases)
+    return {...customObject, [property.key.value]:getPlaceholderFromType(property, typeAliases)}
+    //  return {...state, foo:bar}
     }else{
       return getPlaceholderFromProperty(property, typeAliases)
     }
