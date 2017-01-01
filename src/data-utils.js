@@ -36,28 +36,32 @@ export function getPlaceholderFromProperty(property, typeAliases){
 
 export function getGenericTypeObject(typeAlias, typeAliases){
   return typeAlias.right.properties.reduce((customObject, property) => {
+    let value
     if(property.value.type === 'GenericTypeAnnotation'){
-    return {...customObject, [property.key.value]:getPlaceholderFromType(property, typeAliases)}
-    //  return {...state, foo:bar}
+      value = getPlaceholderFromType(property.value, typeAliases)
     }else{
-      return getPlaceholderFromProperty(property, typeAliases)
+      value = getPlaceholderFromProperty(property, typeAliases)
     }
+    return {...customObject, [property.key.name]:value}
   },{})
 }
 
-export function getGenerctTypeArray(){}
+export function getGenericTypeArray(){}
 
 export function getPlaceholderFromType(typeAnnotation, typeAliases){
-  if(typeAnnotation.type === 'GenericTypeAnnotation' && typeAnnotation && typeAnnotation.id && typeAnnotation.id.name){
+  if(typeAnnotation && typeAnnotation.type === 'GenericTypeAnnotation' && typeAnnotation.id.name){
     const typeAlias = typeAliases.find(typeAlias => typeAliasExistsForAnnotation(typeAlias,typeAnnotation.id.name))
-    if(!typeAlias)
+    if(!typeAlias){
       return false
+    }
     if(typeAlias.right.type === 'ObjectTypeAnnotation'){
       return getGenericTypeObject(typeAlias,typeAliases)
-    }else{//assume simple, add array, etc
+    }else{
+      console.log('here')//assume simple, add array, etc
       //return getPlaceholderFromProperty(typeAlias.right.property, typeAliases)
     }
   }else{
+    //console.log(typeAnnotation.type)
     let dataType = typeAnnotationsMap[typeAnnotation.type]
     return dataTypeMap[dataType]
   }

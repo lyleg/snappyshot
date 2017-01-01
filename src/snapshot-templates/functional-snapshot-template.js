@@ -1,7 +1,7 @@
 export default function functionalSnapshotTemplate(options){
   let {name, filePath, signatures, exportType} = options
   let signatureString = signatures.map((signature)=>{
-    if(Array.isArray(signature)){
+    if(Array.isArray(signature) || signature.constructor === {}.constructor){
       return JSON.stringify(signature)
     }else{
       return signature
