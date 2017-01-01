@@ -1,3 +1,9 @@
+/**
+todo, more elaborate typeAlias support, module, interfaces, etc
+*/
+
+import types from 'ast-types'
+
 export let dataTypeMap = {//move defaults to snappyshot.config.js
   'number': 2000,
   'string': 'abcdefghijklmnopqrstuvwxyz',
@@ -19,33 +25,48 @@ let typeAnnotationsMap = {//should I just ditch react doc gen and do everything 
   'MixedTypeAnnotation': 'mixed',
 }
 
-export function getPlaceholderFromType(typeAnnotation, typeAlias){
-  if(typeAnnotation.type === 'GenericTypeAnnotation'){
-    if(typeAnnotation && typeAnnotation.typeParameters && typeAnnotation.typeParameters.params){
-      typeAnnotation.typeParameters.params.map((param)=>{
-      //  console.log(JSON.stringify(param))
-        return getPlaceholderFromType(param)
-      })
-    }else{
-      return false
-      //console.log(JSON.stringify(typeAnnotation))
+export function typeAliasExistsForAnnotation(type,name){
+  return type.id.name === name
+}
 
+export function getPlaceholderFromProperty(property, typeAliases){
+  let dataType = typeAnnotationsMap[property.value.type]
+  return dataTypeMap[dataType]
+}
+
+export function getGenericTypeObject(typeAlias, typeAliases){//how do I keep track of original keys
+  return typeAlias.right.properties.reduce((customObject, property) => {
+    if(property.value.type === 'GenericTypeAnnotation'){
+      return getPlaceholderFromType(property, typeAliases)
+    }else{
+      return getPlaceholderFromProperty(property, typeAliases)
+    }
+  },{})
+}
+
+export function getGenerctTypeArray(){}
+
+export function getPlaceholderFromType(typeAnnotation, typeAliases){
+  if(typeAnnotation.type === 'GenericTypeAnnotation' && typeAnnotation && typeAnnotation.id && typeAnnotation.id.name){
+    const typeAlias = typeAliases.find(typeAlias => typeAliasExistsForAnnotation(typeAlias,typeAnnotation.id.name))
+    if(!typeAlias)
+      return false
+    if(typeAlias.right.type === 'ObjectTypeAnnotation'){
+      return getGenericTypeObject(typeAlias,typeAliases)
+    }else{//assume simple, add array, etc
+      //return getPlaceholderFromProperty(typeAlias.right.property, typeAliases)
     }
   }else{
-  //  console.log(typeAnnotation.type);
     let dataType = typeAnnotationsMap[typeAnnotation.type]
-    //console.log(dataType)
     return dataTypeMap[dataType]
   }
 
 }
 
-export function generateSignaturesFromFlowType(params:Array<Object>, typeAlias:Array<Object>){
-//  console.log(params)
+export function generateSignaturesFromFlowType(params:Array<Object>, typeAliases:Array<Object>){
   return params
-  .filter(param => param.typeAnnotation)
+  .filter(param => param.typeAnnotation && param.typeAnnotation.typeAnnotation)
   .map((param)=>{
-  //  console.log(getPlaceholderFromType(param.typeAnnotation.typeAnnotation))
-    return getPlaceholderFromType(param.typeAnnotation.typeAnnotation, typeAlias)
+    return getPlaceholderFromType(param.typeAnnotation.typeAnnotation, typeAliases)
   })
 }

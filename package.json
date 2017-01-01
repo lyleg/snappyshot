@@ -9,7 +9,8 @@
   ],
   "main": "dist/index.js",
   "scripts": {
-    "dev": "rimraf dist/ && babel --watch src/ --out-dir dist/ --ignore __tests__,__mocks__",
+    "copy": " cp -r dist/ /usr/local/lib/node_modules/snappyshot/dist",
+    "dev": "rimraf dist/ && babel --watch src/ --out-dir dist/ --ignore __tests__,__mocks__ && npm run copy",
     "test": "jest",
     "build": "babel-node"
   },
@@ -36,6 +37,7 @@
     "react-test-renderer": "^15.3.2"
   },
   "dependencies": {
+    "ast-types": "^0.9.3",
     "babylon": "^6.14.1",
     "denodeify": "^1.2.1",
     "jest": "^16.0.1",
