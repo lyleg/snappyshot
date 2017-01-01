@@ -3,6 +3,8 @@ export default function functionalSnapshotTemplate(options){
   let signatureString = signatures.map((signature)=>{
     if(Array.isArray(signature) || signature.constructor === {}.constructor){
       return JSON.stringify(signature)
+    }else if(typeof signature === 'string'){
+      return '"' + signature + '"'
     }else{
       return signature
     }

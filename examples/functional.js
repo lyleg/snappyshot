@@ -10,7 +10,7 @@ type Address = {
   street:string,
   zipcode: number
 }
-/*
+
 export function add(num1: number, num2: number): number {
   return num1 + num2;
 }
@@ -23,7 +23,7 @@ export function total(numbers: Array<number>) {
   }
   return result;
 }
-*/
+
 export function processCustomFlowType(address:Address, foo:string){
   return address
 }
