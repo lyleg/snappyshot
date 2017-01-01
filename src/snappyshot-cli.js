@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --harmony
 /* @flow */
 var argv = require('nomnom')
   .script('snappyshot')
@@ -34,7 +34,7 @@ var argv = require('nomnom')
       if(!await isDir(writeFolderPath)){
         await toPromise(mkdirp)(writeFolderPath)
       }
-      
+
       await toPromise(fs.writeFile)(writeFilePath, snapshot)
     }catch(e){
       console.log(e)

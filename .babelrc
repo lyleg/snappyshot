@@ -1,6 +1,6 @@
 {
-  "presets": ["react", "es2015", "stage-0"],
-  "plugins": ["transform-flow-strip-types", "transform-async-to-generator",
+  "presets": ["react", "es2017-node7"],
+  "plugins": ["transform-flow-strip-types",
     "transform-es2015-modules-commonjs"
   ]
 }
