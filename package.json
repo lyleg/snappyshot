@@ -11,7 +11,7 @@
   "scripts": {
     "copy": " cp -r dist/ /usr/local/lib/node_modules/snappyshot/dist",
     "dev": "rimraf dist/ && babel --watch src/ --presets es2015 --out-dir dist/ --ignore __tests__,__mocks__ && npm run copy",
-    "test": "jest",
+    "test": "node --harmony ./node_modules/.bin/jest",
     "build": "babel-node"
   },
   "bin": {
