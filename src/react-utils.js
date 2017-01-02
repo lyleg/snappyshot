@@ -1,6 +1,9 @@
 //check for defaultValues,  flow, then proptypes
 import {dataTypeMap} from './data-utils'
 
+
+//todo, have all flowType parsing be covered by functions in data-utils, one off react props can still be done here
+
 function keyValueToString(typeName, propName, propValue){
   if(typeName === 'string'){
     propValue = '"' + propValue + '"'
