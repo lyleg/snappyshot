@@ -91,18 +91,22 @@ function generateSnapshotsFromExports(babyParsed:Object, filePath:string, typeAl
 }
 
 export function generateSnapshot(src:string, filePath:string){
-  let babyParsed = babyParse(src, babyOptions)
-  let typeAlias = babyParsed.program.body.filter((node) => node.type === 'TypeAlias')
-
-  let isReactComponent = getExports(babyParsed).find((exportNode)=>{//loop through all exports, if one react exists push to react-docgen for now, else loop and mock for all
-    return isReact(exportNode)
-  })
-  if(isReactComponent){//leveraging react-docgen for now, will eventually have everything go through generateSnapshotsFromExports
-    return generateReactComponentSnapshot(src, babyParsed, filePath)
-  }else{
-    return generateSnapshotsFromExports(babyParsed, filePath, typeAlias)
+  try{
+    let babyParsed = babyParse(src, babyOptions)
+    let typeAliases = babyParsed.program.body.filter((node) => node.type === 'TypeAlias')
+    let isReactComponent = getExports(babyParsed).find((exportNode)=>{//loop through all exports, if one react exists push to react-docgen for now, else loop and mock for all
+      return isReact(exportNode)
+    })
+    if(isReactComponent){//leveraging react-docgen for now, will eventually have everything go through generateSnapshotsFromExports
+      return generateReactComponentSnapshot(src, babyParsed, filePath)
+    }else{
+      return generateSnapshotsFromExports(babyParsed, filePath, typeAliases)
+    }
+  }catch(e){
+    console.error('unable to parse ' + filePath)
+    //console.error(e)
+    return
   }
-
 }
 
  function generateReactComponentSnapshot(componentSrc:string, babyParsed:Object, filePath:string){
