@@ -49,14 +49,20 @@ async function parseFiles(err, files:Array<string>){
       return
     }
      let snapshot = generateSnapshot(fileSrc, filePath)
+     if(!snapshot){
+       console.log('unable to produce snapshot for ' + filePath)
+       return
+     }
      let writeFilePath = '__tests__/' +  filePath
      let writeFolderPath = computeFolderPath(writeFilePath)
 
      if(!await isDir(writeFolderPath)){
        await toPromise(mkdirp)(writeFolderPath)
      }
-
      let [writeFileErr, writeFile] = await to(toPromise(fs.writeFile)(writeFilePath, snapshot))
+     if(writeFileErr){
+       console.error(writeFileErr)
+     }
   })
 }
   async function readFiles(targetPath:string){

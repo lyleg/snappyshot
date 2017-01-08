@@ -53,12 +53,12 @@ function generateClassSnapshot(exportFromTarget, filePath){//poc for experimenti
     })
   }
 }
-function generateVanillaSnapshot(exportFromTarget, filePath, typeAlias){
+function generateVanillaSnapshot(exportFromTarget, filePath, typeAlias):string{
   if (exportFromTarget.declaration.type === 'FunctionDeclaration'){
     return generateFunctionalSnapshot(exportFromTarget, filePath, typeAlias)
+  }else{
+    return ''
   }
-  //if class
-  //if ?
 }
 /*
 For now support
@@ -73,11 +73,19 @@ function generateSnapshotsFromExports(babyParsed:Object, filePath:string, typeAl
   return exportsFromTarget.reduce((snapshotString,exportFromTarget) => {
     if(exportFromTarget.declaration.type === 'ObjectExpression'){
       return exportFromTarget.declaration.properties.reduce((snapshotString, exportFromTargetOneLevel)=>{
-        return snapshotString + generateVanillaSnapshot(exportFromTargetOneLevel, filePath, typeAlias) + '\n'
+        let newSnapshot = generateVanillaSnapshot(exportFromTargetOneLevel, filePath, typeAlias)
+        if(newSnapshot)
+          return snapshotString + newSnapshot + '\n'
+        else
+          return snapshotString
       })
     }
     else{
-      return snapshotString + generateVanillaSnapshot(exportFromTarget, filePath, typeAlias) + '\n'
+      let newSnapshot = generateVanillaSnapshot(exportFromTarget, filePath, typeAlias)
+      if(newSnapshot)
+        return snapshotString + newSnapshot + '\n'
+      else
+        return snapshotString
     }
   },'')
 }
