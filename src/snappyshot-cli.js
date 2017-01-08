@@ -36,7 +36,7 @@ function ignoreFunc(file, stats) {
   if(file.indexOf('test') !== -1){
     return true
   }else{
-    return path.extname(file) !== '.js'
+    return !stats.isDirectory() && path.extname(file) !== '.js'
   }
 }
 
