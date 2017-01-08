@@ -62,6 +62,8 @@ async function parseFiles(err, files:Array<string>){
      let [writeFileErr, writeFile] = await to(toPromise(fs.writeFile)(writeFilePath, snapshot))
      if(writeFileErr){
        console.error(writeFileErr)
+     }else{
+       console.log('Generated snapshot for ' + filePath)
      }
   })
 }
