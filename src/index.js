@@ -19,7 +19,8 @@ let babyOptions =  {
   sourceType: "module",
   plugins: [
     "jsx",
-    "flow"
+    "flow",
+    "objectRestSpread"
   ]
 }
 
@@ -104,7 +105,7 @@ export function generateSnapshot(src:string, filePath:string){
     }
   }catch(e){
     console.error('unable to parse ' + filePath)
-    //console.error(e)
+    console.error(e)
     return
   }
 }
