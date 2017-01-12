@@ -24,13 +24,17 @@ let babyOptions =  {
   ]
 }
 
-function isReact(path:Object) {//simple react check, only valid for components that directly extend React.component
-  if(path && path.declaration && path.declaration.superClass
-    && path.declaration.superClass.object
-    && path.declaration.superClass.object.name === 'React'){
+/*
+try to parse with react doc gen, if error then not react.
+we are calling docgen twice, but want to keep this function return boolean for future growth
+*/
+function isReactComponent(src:string):boolean {
+  try{
+    let docGenParsed = docGenParse(src)
     return true
-  }//react native, createClass name?
-  return false
+  }catch (e){
+    return false
+  }
 }
 
 
@@ -95,15 +99,14 @@ export function generateSnapshot(src:string, filePath:string){
   try{
     let babyParsed = babyParse(src, babyOptions)
     let typeAliases = babyParsed.program.body.filter((node) => node.type === 'TypeAlias')
-    let isReactComponent = getExports(babyParsed).find((exportNode)=>{//loop through all exports, if one react exists push to react-docgen for now, else loop and mock for all
-      return isReact(exportNode)
-    })
-    if(isReactComponent){//leveraging react-docgen for now, will eventually have everything go through generateSnapshotsFromExports
+
+    let isReact = isReactComponent(src)
+    if(isReact){//leveraging react-docgen for now, will eventually have everything go through generateSnapshotsFromExports
       return generateReactComponentSnapshot(src, babyParsed, filePath)
     }else{
       return generateSnapshotsFromExports(babyParsed, filePath, typeAliases)
     }
-  }catch(e){
+  }catch (e){
     console.error('unable to parse ' + filePath)
     console.error(e)
     return

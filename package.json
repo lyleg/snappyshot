@@ -1,6 +1,6 @@
 {
   "name": "snappyshot",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Automatically generate snapshot tests for React components and vanilla JavaScript",
   "keywords": [
     "snaphsot",
@@ -50,6 +50,7 @@
     "nomnom": "^1.8.1",
     "prettyjson": "^1.1.3",
     "react-docgen": "^2.10.0",
+    "recast": "^0.11.18",
     "recursive-readdir": "^2.1.0",
     "rimraf": "^2.5.4"
   }
