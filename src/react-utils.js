@@ -7,7 +7,7 @@ import {dataTypeMap} from './data-utils'
 function keyValueToString(typeName, propName, propValue){
   if(typeName === 'string'){
     propValue = '"' + propValue + '"'
-  }else if(typeName === 'bool'){
+  }else if(typeName === 'bool' || typeName === 'number'){
     propValue = '{' + propValue + '}'
   }else if (typeName === 'object'){
     propValue = JSON.stringify(propValue)
