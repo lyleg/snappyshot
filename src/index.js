@@ -129,7 +129,6 @@ export function generateSnapshot(src:string, filePath:string){
       exportNameType = {type:'ExportDefaultDeclaration', name:'Component'}
 
     filePath = generateFilePathTraversal(filePath) + filePath
-    console.log(filePath)
     let snapshotString = reactComponentSnapshotTemplate({
       component: exportNameType.name,
       type: exportNameType.type,
