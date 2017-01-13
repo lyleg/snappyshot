@@ -7,6 +7,10 @@ import {dataTypeMap} from './data-utils'
 function keyValueToString(typeName, propName, propValue){
   if(typeName === 'string'){
     propValue = '"' + propValue + '"'
+  }else if(typeName === 'bool'){
+    propValue = '{' + propValue + '}'
+  }else if (typeName === 'object'){
+    propValue = JSON.stringify(propValue)
   }
   return ' ' + propName + ' = ' + propValue
 }
@@ -50,7 +54,16 @@ export function parseFlowTypeObject(flowTypeObject:Object){
 }
 
 export function generateMockValueFromFlowType(typeName:string, propName:string):string{//make function pure
-  console.log('type ' + typeName)
+  if(dataTypeMap[typeName]){
+    return dataTypeMap[typeName]
+  }else{
+    //console.log(JSON.stringify(propDescriptor.flowType.elements))
+    console.warn('unable to determine flowtype for ' + propName)
+    return ''
+  }
+}
+
+export function generateMockValueFromPropType(typeName:string, propName:string):string{//make function pure
   if(dataTypeMap[typeName]){
     return dataTypeMap[typeName]
   }else{
@@ -65,10 +78,10 @@ export function generateMockValue(propName:string, propDescriptor:PropDescriptor
     return propDescriptor.defaultValue.value
   }else if(propDescriptor.flowType){
     let typeName = getTypeName(propDescriptor)
-    console.log(typeName)
     return generateMockValueFromFlowType(typeName, propName)
   }else{//todo, add check for propType
-    console.warn('not able to generate a value for ')
-    return ''
+    console.log(JSON.stringify(propDescriptor,null,2))
+    let typeName = propDescriptor.type.name
+    return generateMockValueFromPropType(typeName, propName)
   }
 }

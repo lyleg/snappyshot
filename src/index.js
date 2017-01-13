@@ -121,8 +121,15 @@ export function generateSnapshot(src:string, filePath:string){
       ? generateMockValue('children',docGenParsed.props.children)
       : ''
     let exportFromTarget = getExports(babyParsed)[0]//only supporting one react comp per file
-    let exportNameType = {type:exportFromTarget.type, name:exportFromTarget.declaration.id.name}
+
+    let exportNameType
+    if(exportFromTarget && exportFromTarget.declaration && exportFromTarget.declaration.id && exportFromTarget.declaration.id.name)
+      exportNameType = {type:exportFromTarget.type, name:exportFromTarget.declaration.id.name}
+    else
+      exportNameType = {type:'ExportDefaultDeclaration', name:'Component'}
+
     filePath = generateFilePathTraversal(filePath) + filePath
+    console.log(filePath)
     let snapshotString = reactComponentSnapshotTemplate({
       component: exportNameType.name,
       type: exportNameType.type,

@@ -11,7 +11,8 @@ export let dataTypeMap = {//move defaults to snappyshot.config.js
   'null': null,
   'void': undefined,
   'any': 1,
-  'mixed':{},
+  'mixed':'{}',
+  'object': {},
   'all':[-1, 0, 1, 'abc', '', true, false, null, undefined]
 }
 
@@ -57,7 +58,6 @@ export function getPlaceholderFromType(typeAnnotation, typeAliases){
     if(typeAlias.right.type === 'ObjectTypeAnnotation'){
       return getGenericTypeObject(typeAlias,typeAliases)
     }else{
-      console.log('here')//assume simple, add array, etc
       //return getPlaceholderFromProperty(typeAlias.right.property, typeAliases)
     }
   }else{
