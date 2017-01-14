@@ -9,7 +9,7 @@ import {dataTypeMap} from './data-utils'
 function keyValueToString(typeName, propName, propValue){
   if(typeName === 'string'){
     propValue = '"' + propValue + '"'
-  }else if(typeName === 'bool' || typeName === 'number'){
+  }else if(typeName === 'bool' || typeName === 'number' || typeName === 'null'){
     propValue = '{' + propValue + '}'
   }else if (typeName === 'object'){
     propValue = JSON.stringify(propValue)
@@ -25,7 +25,9 @@ export function mockPropString(parsedResponse:ParsedResponse){
         let propDescriptor = parsedResponse.props[propName]
         let typeName = getTypeName(propDescriptor)
         let propValue = generateMockValue(propName, propDescriptor)
-        let keyValueStringValue = propValue ? keyValueToString(typeName,propName,propValue) : ''
+        let keyValueStringValue = propValue
+         ? (typeof keyValueToString(typeName,propName,propValue) !== undefined)
+         : ''
         return propsString += keyValueStringValue
     },'')
   }else{
@@ -55,7 +57,7 @@ export function parseFlowTypeObject(flowTypeObject:Object){
   },'{') + '}'
 }
 
-export function generateMockValueFromFlowType(typeName:string, propName:string):string{//make function pure
+export function generateMockValueFromType(typeName:string, propName:string):string{//make function pure
   if(dataTypeMap[typeName]){
     return dataTypeMap[typeName]
   }else{
@@ -65,25 +67,16 @@ export function generateMockValueFromFlowType(typeName:string, propName:string):
   }
 }
 
-export function generateMockValueFromPropType(typeName:string, propName:string):string{//make function pure
-  if(dataTypeMap[typeName]){
-    return dataTypeMap[typeName]
-  }else{
-    //console.log(JSON.stringify(propDescriptor.flowType.elements))
-    console.warn('unable to generate mock for ' + propName + ' of type ' + typeName)
-    return ''
-  }
-}
 
 export function generateMockValue(propName:string, propDescriptor:PropDescriptor):string{
   if(propDescriptor.defaultValue){
     return propDescriptor.defaultValue.value
   }else if(propDescriptor.flowType){
     let typeName = getTypeName(propDescriptor)
-    return generateMockValueFromFlowType(typeName, propName)
+    return generateMockValueFromType(typeName, propName)
   }else{//todo, add check for propType
     console.log(JSON.stringify(propDescriptor,null,2))
     let typeName = propDescriptor.type.name
-    return generateMockValueFromPropType(typeName, propName)
+    return generateMockValueFromType(typeName, propName)
   }
 }

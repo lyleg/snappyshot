@@ -17,48 +17,6 @@ https://github.com/babel/babel/tree/master/packages/babel-template replace our t
 
 
 /*
-var options = {
-  sourceType: 'module',
-  strictMode: false,
-  locations: true,
-  ranges: true,
-  ecmaVersion: 7,
-  features: {
-    'es7.classProperties': true,
-    'es7.decorators': true,
-    'es7.comprehensions': true,
-    'es7.asyncFunctions': true,
-    'es7.exportExtensions': true,
-    'es7.trailingFunctionCommas': true,
-    'es7.objectRestSpread': true,
-    'es7.doExpressions': true,
-    'es7.functionBind': true,
-  },
-  plugins: { jsx: true, flow: true },
-};
-*/
-let babyOptions = {
-  sourceType: "module",
-  ecmaVersion: 7,
-  features: {
-    'es7.classProperties': true,
-    'es7.decorators': true,
-    'es7.comprehensions': true,
-    'es7.asyncFunctions': true,
-    'es7.exportExtensions': true,
-    'es7.trailingFunctionCommas': true,
-    'es7.objectRestSpread': true,
-    'es7.doExpressions': true,
-    'es7.functionBind': true,
-  },
-  plugins: [
-    "jsx",
-    "flow",
-    "objectRestSpread"
-  ]
-}
-
-/*
 try to parse with react doc gen, if error then not react.
 we are calling docgen twice, but want to keep this function return boolean for future growth
 */
@@ -131,7 +89,7 @@ function generateSnapshotsFromExports(babyParsed:Object, filePath:string, typeAl
 
 export function generateSnapshot(src:string, filePath:string){
   try{
-    let babyParsed = babylon.parse(src, babyOptions)
+    let babyParsed = babylon.parse(src)
     let typeAliases = babyParsed.body.filter((node) => node.type === 'TypeAlias')
 
     let isReact = isReactComponent(src)
