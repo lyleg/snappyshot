@@ -10,10 +10,12 @@ export let dataTypeMap = {//move defaults to snappyshot.config.js
   'boolean': true,
   'null': null,
   'void': undefined,
-  'any': '',
-  'mixed':'{}',
-//  'object': {},
-  'all':[-1, 0, 1, 'abc', '', true, false, null, undefined]
+  //'all':[-1, 0, 1, 'abc', '', true, false, null, undefined]
+}
+
+
+export function inDataTypeMap(type){
+  return dataTypeMap.keys().indexOf(type) !== -1
 }
 
 let typeAnnotationsMap = {//should I just ditch react doc gen and do everything with these types?

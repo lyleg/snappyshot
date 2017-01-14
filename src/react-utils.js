@@ -1,5 +1,5 @@
 //check for defaultValues,  flow, then proptypes
-import {dataTypeMap} from './data-utils'
+import {dataTypeMap, inDataTypeMap} from './data-utils'
 
 
 //todo, omit object and node
@@ -17,6 +17,18 @@ function keyValueToString(typeName, propName, propValue){
   return ' ' + propName + ' = ' + propValue
 }
 
+
+function computeKeyValueStringValue(typeName, propName, propValue){
+  if(!propValue)
+    return
+  const keyValueString = keyValueToString(typeName,propName,propValue)
+  if(typeof keyValueString !== undefined && inDataTypeMap(typeName)){
+    return keyValueString
+  }else{
+    return
+  }
+}
+
 export function mockPropString(parsedResponse:ParsedResponse){
   if(parsedResponse.props){
     return Object.keys(parsedResponse.props)
@@ -25,9 +37,7 @@ export function mockPropString(parsedResponse:ParsedResponse){
         let propDescriptor = parsedResponse.props[propName]
         let typeName = getTypeName(propDescriptor)
         let propValue = generateMockValue(propName, propDescriptor)
-        let keyValueStringValue = propValue
-         ? (typeof keyValueToString(typeName,propName,propValue) !== undefined)
-         : ''
+        let keyValueStringValue = computeKeyValueStringValue(typeName, propName, propValue)
         return propsString += keyValueStringValue
     },'')
   }else{
