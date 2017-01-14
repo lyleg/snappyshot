@@ -3,7 +3,7 @@ import reactComponentSnapshotTemplate from './snapshot-templates/react-component
 import functionalSnapshotTemplate from './snapshot-templates/functional-snapshot-template'
 import classSnapshotTemplate from './snapshot-templates/class-snapshot-template'
 import {parse as docGenParse} from 'react-docgen'
-import {parse as babyParse} from 'babylon'
+import babylon from 'react-docgen/dist/babylon'
 import {getExports} from './babylon-utils'
 import {generateSignaturesFromFlowType} from './data-utils'
 import {generateFilePathTraversal} from './utils'
@@ -15,8 +15,42 @@ atom plugin
 https://github.com/babel/babel/tree/master/packages/babel-template replace our templates?
 */
 
-let babyOptions =  {
+
+/*
+var options = {
+  sourceType: 'module',
+  strictMode: false,
+  locations: true,
+  ranges: true,
+  ecmaVersion: 7,
+  features: {
+    'es7.classProperties': true,
+    'es7.decorators': true,
+    'es7.comprehensions': true,
+    'es7.asyncFunctions': true,
+    'es7.exportExtensions': true,
+    'es7.trailingFunctionCommas': true,
+    'es7.objectRestSpread': true,
+    'es7.doExpressions': true,
+    'es7.functionBind': true,
+  },
+  plugins: { jsx: true, flow: true },
+};
+*/
+let babyOptions = {
   sourceType: "module",
+  ecmaVersion: 7,
+  features: {
+    'es7.classProperties': true,
+    'es7.decorators': true,
+    'es7.comprehensions': true,
+    'es7.asyncFunctions': true,
+    'es7.exportExtensions': true,
+    'es7.trailingFunctionCommas': true,
+    'es7.objectRestSpread': true,
+    'es7.doExpressions': true,
+    'es7.functionBind': true,
+  },
   plugins: [
     "jsx",
     "flow",
@@ -97,8 +131,8 @@ function generateSnapshotsFromExports(babyParsed:Object, filePath:string, typeAl
 
 export function generateSnapshot(src:string, filePath:string){
   try{
-    let babyParsed = babyParse(src, babyOptions)
-    let typeAliases = babyParsed.program.body.filter((node) => node.type === 'TypeAlias')
+    let babyParsed = babylon.parse(src, babyOptions)
+    let typeAliases = babyParsed.body.filter((node) => node.type === 'TypeAlias')
 
     let isReact = isReactComponent(src)
     if(isReact){//leveraging react-docgen for now, will eventually have everything go through generateSnapshotsFromExports
@@ -108,7 +142,7 @@ export function generateSnapshot(src:string, filePath:string){
     }
   }catch (e){
     console.error('unable to parse ' + filePath)
-    console.error(e)
+    //console.error(e)
     return
   }
 }

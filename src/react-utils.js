@@ -2,6 +2,8 @@
 import {dataTypeMap} from './data-utils'
 
 
+//todo, omit object and node
+
 //todo, have all flowType parsing be covered by functions in data-utils, one off react props can still be done here
 
 function keyValueToString(typeName, propName, propValue){
@@ -23,7 +25,7 @@ export function mockPropString(parsedResponse:ParsedResponse){
         let propDescriptor = parsedResponse.props[propName]
         let typeName = getTypeName(propDescriptor)
         let propValue = generateMockValue(propName, propDescriptor)
-        let keyValueStringValue = keyValueToString(typeName,propName,propValue)
+        let keyValueStringValue = propValue ? keyValueToString(typeName,propName,propValue) : ''
         return propsString += keyValueStringValue
     },'')
   }else{
@@ -68,7 +70,7 @@ export function generateMockValueFromPropType(typeName:string, propName:string):
     return dataTypeMap[typeName]
   }else{
     //console.log(JSON.stringify(propDescriptor.flowType.elements))
-    console.warn('unable to determine flowtype for ' + propName)
+    console.warn('unable to generate mock for ' + propName + ' of type ' + typeName)
     return ''
   }
 }

@@ -12,7 +12,7 @@ export let dataTypeMap = {//move defaults to snappyshot.config.js
   'void': undefined,
   'any': 1,
   'mixed':'{}',
-  'object': {},
+//  'object': {},
   'all':[-1, 0, 1, 'abc', '', true, false, null, undefined]
 }
 
