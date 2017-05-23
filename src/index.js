@@ -1,17 +1,9 @@
 /* @flow */
-import { parse as docGenParse } from "react-docgen";
-import functionalSnapshotTemplate
-    from "./snapshot-templates/functional-snapshot-template";
-import classSnapshotTemplate
-    from "./snapshot-templates/class-snapshot-template";
+import { parse as docGenParse } from "react-docgen"
+import { generateReactComponentSnapshot } from "./react-component-snapshot"
+import { generateSnapshotsFromExports } from "./javascript-snapshot"
 
-import { generateReactComponentSnapshot } from "./react-component-snapshot";
-import { generateSnapshotsFromExports } from "./javascript-snapshot";
-
-import babylon from "react-docgen/dist/babylon";
-import { getExports } from "./babylon-utils";
-import { generateSignaturesFromFlowType } from "./data-utils";
-import { generateFilePathTraversal } from "./utils";
+import babylon from "react-docgen/dist/babylon"
 
 /* potential ideas
 generate multiple snapshots with optional permutations for non required and things like boolean
@@ -24,34 +16,33 @@ we are calling docgen twice, but want to keep this function return boolean for f
 */
 function isReactComponent(src: string): boolean {
     try {
-        let docGenParsed = docGenParse(src);
-        return true;
+        let docGenParsed :Object = docGenParse(src)
+        return !!docGenParsed
     } catch (e) {
-        return false;
+        return false
     }
 }
 
 export function generateSnapshot(src: string, filePath: string) {
     try {
-        let babyParsed = babylon.parse(src);
+        let babyParsed = babylon.parse(src)
         let typeAliases = babyParsed.body.filter(
             node => node.type === "TypeAlias"
-        );
+        )
 
-        let isReact = isReactComponent(src);
+        let isReact = isReactComponent(src)
         if (isReact) {
             //leveraging react-docgen for now, will eventually have everything go through generateSnapshotsFromExports
-            return generateReactComponentSnapshot(src, babyParsed, filePath);
+            return generateReactComponentSnapshot(src, babyParsed, filePath)
         } else {
             return generateSnapshotsFromExports(
                 babyParsed,
                 filePath,
                 typeAliases
-            );
+            )
         }
     } catch (e) {
-        console.error("unable to parse " + filePath);
-        //console.error(e)
-        return;
+        console.error("unable to parse " + filePath)
+        return
     }
 }

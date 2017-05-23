@@ -1,3 +1,13 @@
+import functionalSnapshotTemplate
+    from "./snapshot-templates/functional-snapshot-template"
+
+import { getExports } from "./babylon-utils"
+import { generateSignaturesFromFlowType } from "./data-utils"
+import { generateFilePathTraversal } from "./utils"
+/*import classSnapshotTemplate
+    from "./snapshot-templates/class-snapshot-template"
+*/
+
 function generateFunctionalSnapshot(exportFromTarget, filePath, typeAlias) {
     return functionalSnapshotTemplate({
         exportType: exportFromTarget.type,
@@ -7,7 +17,7 @@ function generateFunctionalSnapshot(exportFromTarget, filePath, typeAlias) {
             exportFromTarget.declaration.params,
             typeAlias
         )
-    });
+    })
 }
 
 function generateVanillaSnapshot(
@@ -20,9 +30,9 @@ function generateVanillaSnapshot(
             exportFromTarget,
             filePath,
             typeAlias
-        );
+        )
     } else {
-        return "";
+        return ""
     }
 }
 /*
@@ -36,7 +46,7 @@ export function generateSnapshotsFromExports(
     filePath: string,
     typeAlias: Array<Object>
 ) {
-    let exportsFromTarget = getExports(babyParsed);
+    let exportsFromTarget = getExports(babyParsed)
 
     return exportsFromTarget.reduce((snapshotString, exportFromTarget) => {
         if (exportFromTarget.declaration.type === "ObjectExpression") {
@@ -46,21 +56,21 @@ export function generateSnapshotsFromExports(
                         exportFromTargetOneLevel,
                         filePath,
                         typeAlias
-                    );
-                    if (newSnapshot) return snapshotString + newSnapshot + "\n";
-                    else return snapshotString;
+                    )
+                    if (newSnapshot) return snapshotString + newSnapshot + "\n"
+                    else return snapshotString
                 }
-            );
+            )
         } else {
             let newSnapshot = generateVanillaSnapshot(
                 exportFromTarget,
                 filePath,
                 typeAlias
-            );
-            if (newSnapshot) return snapshotString + newSnapshot + "\n";
-            else return snapshotString;
+            )
+            if (newSnapshot) return snapshotString + newSnapshot + "\n"
+            else return snapshotString
         }
-    }, "");
+    }, "")
 }
 
 /*
